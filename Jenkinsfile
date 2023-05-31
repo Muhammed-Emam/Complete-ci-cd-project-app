@@ -1,40 +1,70 @@
 pipeline {
     agent {
-        label 'slave'
+        label 'slave-node'
     }
 
     stages {
-        stage('Clone CI-CD Repository') {
-            steps {
-                git 'https://github.com/Muhammed-Emam/Complete-ci-cd-project-app.git'
-            }
-        }
 
-        stage('ci') {
+        stage('Build-docker-img') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKERPASS', usernameVariable: 'DOCKERENAME')]) {
-                    sh """ 
-                    docker build . -t muhammedemam/wep-app
-                    docker login -u ${DOCKERENAME} -p ${DOCKERPASS}
-                    docker push muhammedemam/wep-app
-                    """
+                script{
+                    sh 'docker build -f Dockerfile -t muhammedemam/wep-app .'
                 }
             }
         }
 
-
-        stage('cd') {
+        stage('push-docker-img') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKERPASS', usernameVariable: 'DOCKERENAME')]) {
-                    sh """
-                    docker login -u ${DOCKERENAME} -p ${DOCKERPASS}
-                    kubectl delete deployment --all -n simple-web
-                    kubectl apply -f namespace.yaml
-                    kubectl apply -f deployment.yaml
-                    kubectl apply -f service.yaml
-                    """
+                script{
+                    withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
+                        sh "docker login -u muhammedemam -p ${dockerhubpwd}"
+                    }
+                    sh 'docker push muhammedemam/wep-app'
                 }
             }
         }
+
+        
     }
 }
+
+
+
+
+
+
+// pipeline {
+//     agent {
+//         label 'slave-node'
+//     }
+
+//     stages {
+
+//         stage('Build-docker-img') {
+//             steps {
+//                 withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKERPASS', usernameVariable: 'DOCKERENAME')]) {
+//                     sh """ 
+//                     docker build . -t muhammedemam/wep-app
+//                     docker login -u ${DOCKERENAME} -p ${DOCKERPASS}
+//                     docker push muhammedemam/wep-app
+//                     """
+//                 }
+//             }
+//         }
+
+
+//         stage('cd') {
+//             steps {
+//                 withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKERPASS', usernameVariable: 'DOCKERENAME')]) {
+//                     sh """
+//                     docker login -u ${DOCKERENAME} -p ${DOCKERPASS}
+//                     kubectl delete deployment --all -n simple-web
+//                     kubectl apply -f namespace.yaml
+//                     kubectl apply -f deployment.yaml
+//                     kubectl apply -f service.yaml
+//                     """
+//                 }
+//             }
+//         }
+//     }
+// }
