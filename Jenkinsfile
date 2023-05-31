@@ -24,6 +24,25 @@ pipeline {
             }
         }
 
+        stage('cd') {
+            steps {
+                script{
+                    withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
+                        sh "docker login -u muhammedemam -p ${dockerhubpwd}"
+                    }
+                    sh """
+                    kubectl delete deployment --all -n web-app
+                    kubectl apply -f namespace.yaml
+                    kubectl apply -f deployment.yaml
+                    kubectl apply -f service.yaml
+
+                    """
+                }
+            }
+        }
+
+        
+
         
     }
 }

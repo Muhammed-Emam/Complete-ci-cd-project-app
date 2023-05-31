@@ -1,12 +1,12 @@
-apiVersion: v1  
+apiVersion: v1
 kind: Service
 metadata:
   name: web-app
   namespace: web-app
 spec:
-  selector: 
+  selector:
     app: web-app
-  type: LoadBalancer 
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 80
