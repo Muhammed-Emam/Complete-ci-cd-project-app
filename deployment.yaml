@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-web-server
+  template:
+    metadata:
+      labels:
+        app: simple-web-server
+    spec:
+      containers:
+        - name: web-app
+          image: muhammedemam/wep-app
+          ports:
+            - name: httpport
+              containerPort: 80
+
+
+
+
+
