@@ -4,9 +4,9 @@ pipeline {
     }
 
     stages {
-        stage('Clone CI Repository') {
+        stage('Clone CI-CD Repository') {
             steps {
-                git 'https://github.com/Muhammed-Emam/Complete-ci-cd-project.git'
+                git 'https://github.com/Muhammed-Emam/Complete-ci-cd-project-app.git'
             }
         }
 
@@ -22,11 +22,6 @@ pipeline {
             }
         }
 
-        stage('Clone CD Repository') {
-            steps {
-                git 'https://github.com/Muhammed-Emam/Complete-ci-cd-project-app.git'
-            }
-        }
 
         stage('cd') {
             steps {
